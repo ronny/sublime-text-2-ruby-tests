@@ -112,7 +112,7 @@ class RubyTestSettings:
   def __getattr__(self, name):
     if not self.settings.has(name):
       raise AttributeError(name)
-    value = sublime.active_window().active_view().settings().get("RubyTest").get(name)
+    value = sublime.active_window().active_view().settings().get("RubyTest", {}).get(name)
     if value:
       return lambda **kwargs: value.format(**kwargs)
     return lambda **kwargs: self.settings.get(name).format(**kwargs)
@@ -120,7 +120,7 @@ class RubyTestSettings:
 
 class BaseRubyTask(sublime_plugin.TextCommand):
   def load_config(self):
-    project_overrides = sublime.active_window().active_view().settings().get("RubyTest")
+    project_overrides = sublime.active_window().active_view().settings().get("RubyTest", {})
     settings = sublime.load_settings("RubyTest.sublime-settings")
     def effective_setting(name):
       return project_overrides.get(name, settings.get(name))
